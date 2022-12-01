@@ -2,10 +2,22 @@ const express = require("express");
 const cors = require("cors");
 const models = require("./models");
 const app = express();
+const multer = require("multer");
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, "uploads/");
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname);
+    },
+  }),
+});
 const port = 8080;
 
 app.use(express.json()); //json 형식의 데이터를 처리할 수 있게 설정하는 코드
 app.use(cors()); //브라우저의 CORS 이슈를 막기 위해 사용하는 코드
+app.use("/uploads", express.static("uploads"));
 
 app.get("/products", async (req, res) => {
   models.Product.findAll({
@@ -66,6 +78,14 @@ app.get("/products/:id", (req, res) => {
       console.error(error);
       res.send("상품 조회에 에러가 발생했습니다");
     });
+});
+
+app.post("/image", upload.single("image"), (req, res) => {
+  const file = req.file;
+  console.log(file);
+  res.send({
+    imageUrl: file.path,
+  });
 });
 
 //세팅한 app을 실행시킨다.

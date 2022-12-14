@@ -1,3 +1,5 @@
+const { INTEGER } = require("sequelize");
+
 module.exports = function (sequelize, DataTypes) {
   const product = sequelize.define("Product", {
     name: {
@@ -19,6 +21,11 @@ module.exports = function (sequelize, DataTypes) {
     imageUrl: {
       type: DataTypes.STRING(300),
       allowNull: true,
+    },
+    soldout: {
+      type: DataTypes.INTEGER(1),
+      allowNull: false,
+      defaultValue: 0,
     },
   });
   return product;
